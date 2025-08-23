@@ -1,5 +1,6 @@
 import os
 import asyncio
+import re
 import google.generativeai as genai
 from dotenv import load_dotenv
 import csv
@@ -31,6 +32,17 @@ async def scrape_website(url: str) -> tuple[str, str]:
             browser = await p.chromium.launch()
             page = await browser.new_page()
             await page.goto(url, timeout=60000)
+            
+            # Look for a pricing link and click it
+            try:
+                pricing_link = page.get_by_role("link", name=re.compile(r"pricing|plans", re.IGNORECASE)).first
+                if await pricing_link.is_visible():
+                    print("Found pricing/plans link, navigating...")
+                    await pricing_link.click()
+                    await page.wait_for_load_state("networkidle", timeout=30000)
+            except Exception as e:
+                print(f"No pricing/plans link found or error navigating: {e}")
+
             text_content = await page.locator('body').inner_text()
             html_content = await page.content()
             await browser.close()
