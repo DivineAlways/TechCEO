@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit a New Tool</title>
+    <style>
+        /* A modern, clean, and easily customizable stylesheet for the form (Dark Theme) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            /* --- Easy Theme Customization (Dark Mode) --- */
+            --form-primary-color: #6366f1; /* Indigo */
+            --form-primary-hover-color: #818cf8; /* Lighter Indigo for hover */
+            --form-background-color: #1f2937; /* Dark Slate Gray */
+            --form-text-color: #f9fafb; /* Almost White */
+            --form-label-color: #9ca3af; /* Lighter Gray */
+            --form-border-color: #4b5563; /* Mid Gray */
+            /* --- End Customization --- */
+        }
+
+        .techceo-form-wrapper {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Black page background */
+            color: var(--form-text-color);
+            padding: 2rem;
+        }
+
+        .techceo-form-container {
+            background-color: var(--form-background-color);
+            padding: 2.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            max-width: 500px;
+            margin: auto;
+        }
+
+        .techceo-form-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            color: var(--form-text-color);
+        }
+
+        .techceo-form-header p {
+            font-size: 0.875rem;
+            color: var(--form-label-color);
+            margin: 0 0 1.5rem 0;
+        }
+
+        .techceo-form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .techceo-form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--form-label-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .techceo-form-group .optional {
+            font-weight: 400;
+            color: #6b7280;
+        }
+
+        .techceo-form-group input[type="text"],
+        .techceo-form-group input[type="url"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--form-border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            background-color: #374151;
+            color: var(--form-text-color);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+
+        .techceo-form-group input[type="text"]:focus,
+        .techceo-form-group input[type="url"]:focus {
+            outline: none;
+            border-color: var(--form-primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+        }
+
+        .techceo-radio-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .techceo-radio-group label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.75rem;
+            border: 1px solid var(--form-border-color);
+            border-radius: 0.5rem;
+            flex: 1;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .techceo-radio-group input[type="radio"] {
+            display: none;
+        }
+
+        .techceo-radio-group input[type="radio"]:checked + label {
+            background-color: rgba(99, 102, 241, 0.2);
+            border-color: var(--form-primary-color);
+        }
+        
+        .techceo-radio-group label span {
+            margin-left: 0.5rem;
+            font-weight: 500;
+            color: var(--form-text-color);
+        }
+
+        .techceo-submit-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background-color: var(--form-primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .techceo-submit-btn:hover {
+            background-color: var(--form-primary-hover-color);
+        }
+        
+        .techceo-form-message {
+            margin-top: 1.5rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+
+        .techceo-form-message.success {
+            background-color: #064e3b;
+            color: #a7f3d0;
+            display: block;
+        }
+
+        .techceo-form-message.error {
+            background-color: #991b1b;
+            color: #fecaca;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="techceo-form-wrapper">
+        <div class="techceo-form-container">
+            <div class="techceo-form-header">
+                <h1>Submit a New Tool</h1>
+                <p>Found a cool AI or Crypto tool? Share it with the community!</p>
+            </div>
+
+            <form id="tool-submission-form">
+                <div class="techceo-form-group">
+                    <label for="tool-name">Tool Name</label>
+                    <input type="text" id="tool-name" name="toolName" required>
+                </div>
+
+                <div class="techceo-form-group">
+                    <label for="tool-url">Tool URL</label>
+                    <input type="url" id="tool-url" name="toolUrl" placeholder="https://example.com" required>
+                </div>
+
+                <div class="techceo-form-group">
+                    <label>Tool Category</label>
+                    <div class="techceo-radio-group">
+                        <input type="radio" id="category-ai" name="category" value="AI" checked>
+                        <label for="category-ai">
+                            <span>AI</span>
+                        </label>
+                        <input type="radio" id="category-crypto" name="category" value="Crypto">
+                        <label for="category-crypto">
+                            <span>Crypto</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="techceo-form-group">
+                    <label for="social-handle">Your Social Handle <span class="optional">(Optional)</span></label>
+                    <input type="text" id="social-handle" name="socialHandle" placeholder="@yourname">
+                </div>
+
+                <button type="submit" class="techceo-submit-btn">Submit Tool</button>
+                
+                <div id="form-message" class="techceo-form-message"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('tool-submission-form');
+        const messageDiv = document.getElementById('form-message');
+        
+        // --- IMPORTANT: REPLACE WITH YOUR ACTUAL WEBHOOK URL ---
+        const WEBHOOK_URL = 'https://your-webhook-url.com/endpoint';
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const submitButton = form.querySelector('.techceo-submit-btn');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+            
+            messageDiv.className = 'techceo-form-message';
+            messageDiv.textContent = '';
+
+            const formData = new FormData(form);
+            const data = {
+                toolName: formData.get('toolName'),
+                toolUrl: formData.get('toolUrl'),
+                category: formData.get('category'),
+                socialHandle: formData.get('socialHandle')
+            };
+
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+
+                if (response.ok) {
+                    messageDiv.className = 'techceo-form-message success';
+                    messageDiv.textContent = 'Thank you! Your tool has been submitted successfully.';
+                    form.reset();
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Server responded with status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Submission Error:', error);
+                messageDiv.className = 'techceo-form-message error';
+                messageDiv.textContent = `An error occurred. Please try again. (${error.message})`;
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Tool';
+            }
+        });
+    </script>
+
+</body>
+</html>

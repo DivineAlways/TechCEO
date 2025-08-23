@@ -1,0 +1,6 @@
+google-generativeai
+python-dotenv
+playwright
+google-api-python-client
+google-auth-oauthlib
+beautifulsoup4
