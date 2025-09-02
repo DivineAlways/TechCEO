@@ -384,7 +384,7 @@ def save_tool_as_csv(data: dict, file_path=None, write_header=False):
     row["Excerpt"] = data.get("excerpt", "A short summary for Canva.")
     row["Thumbnail"] = data.get("image_url", "https://media.istockphoto.com/id/636379014/photo/hands-forming-a-heart-shape-with-sunset-silhouette.jpg?s=612x612&w=0&k=20&c=CgjWWGEasjgwia2VT7ufXa10azba2HXmUDe96wZG8F0=")
     row["Language"] = data.get("language", "en")
-    row["Genres"] = data.get("category", "AI")
+    row["Genres"] = data.get("category", "AI").replace(',', ' ')
     row["Tags"] = data.get("tags", "design,graphics")
     row["Portrait Image"] = data.get("portrait_image", row["Thumbnail"])
     row["Movie Method"] = "Movie URL"
@@ -514,7 +514,10 @@ if __name__ == "__main__":
             if len(parts) >= 2:
                 tool_name, tool_url = parts[0], parts[1]
                 contributor = args.contributor
-                category = args.category
+                if len(parts) >= 3:
+                    category = parts[2]
+                else:
+                    category = args.category
                 if os.name == 'nt':
                     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
                 asyncio.run(process_tool(tool_name, tool_url, contributor, category, all_rows))
@@ -531,7 +534,7 @@ if __name__ == "__main__":
                 out_row["Excerpt"] = row.get("excerpt", "")
                 out_row["Thumbnail"] = row.get("image_url", "")
                 out_row["Language"] = row.get("language", "en")
-                out_row["Genres"] = row.get("category", "")
+                out_row["Genres"] = row.get("category", "").replace(',', ' ')
                 out_row["Tags"] = row.get("tags", "")
                 out_row["Portrait Image"] = row.get("portrait_image", "")
                 out_row["Movie Method"] = row.get("movie_method", "Movie URL")
