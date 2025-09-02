@@ -5,7 +5,7 @@ This project automates the creation of WordPress blog posts about AI and Crypto 
 ## Features
 
 - **Web Scraping:** Uses Playwright to scrape the content of any tool's URL.
-- **AI Content Generation:** Leverages the Gemini 1.5 Flash model to generate detailed and well-structured content.
+- **AI Content Generation:** Leverages the Gemini 2.5 Pro model to generate detailed and well-structured content.
 - **Template-Based:** The entire blog post structure is controlled by a clean, easy-to-edit template (`plan.md`).
 - **WordPress-Compatible CSV:** The script generates a CSV file (`_post.csv`) for each tool that is formatted to be uploaded directly using the WordPress importer.
 
@@ -67,37 +67,59 @@ The script needs a Google Gemini API key to generate content.
 
 ---
 
+
 ## How to Run the Script
 
-The script is now run from the command line, passing the tool's information as arguments.
+The script can be run from the command line in two modes:
 
-### Basic Usage
+### 1. Single Tool Mode
 
-Provide the tool's name and URL as arguments.
+Provide the tool's name and URL as arguments:
 
 ```bash
 python gemini_main.py "Canva" "https://www.canva.com"
 ```
 
-### Optional Arguments
-
-You can also specify a contributor and a category.
+You can also specify a contributor and a category:
 
 ```bash
 python gemini_main.py "Goose AI" "https://block.github.io/goose/" --contributor "Community" --category "AI"
 ```
 
+After running, the script will create a new directory named `output_csv`. Inside, you will find a new file (e.g., `canva_post.csv`) that is ready to be uploaded to WordPress.
+
+
+### 2. Batch Mode (Multiple Tools)
+
+You can process multiple tools at once by providing a markdown file (e.g., `tools.md`) containing tool names and URLs. Use the `--tools_file` argument:
+
+```bash
+python gemini_main.py --tools_file tools.md
+```
+
+#### How to Format `tools.md`
+
+Each line in `tools.md` should contain the tool name and its URL, separated by a pipe (`|`) or a space. For example:
+
+```
+Canva | https://www.canva.com
+Goose AI | https://block.github.io/goose/
+ChatGPT https://chat.openai.com
+```
+
+Lines starting with `#` or blank lines are ignored.
+
+The script will process all tools listed in the file and generate a single CSV file containing all tools:
+
+- `output_csv/all_tools.csv` — ready for bulk upload to WordPress.
+
 ### Help
 
-To see all available options, use the `-h` or `--help` flag.
+To see all available options, use the `-h` or `--help` flag:
 
 ```bash
 python gemini_main.py -h
 ```
-
-After running, the script will create a new directory named `output_csv`. Inside, you will find a new file (e.g., `canva_post.csv`) that is ready to be uploaded to WordPress.
-
----
 
 ## Deployment
 
