@@ -6,6 +6,7 @@ This project automates the creation of WordPress blog posts about AI and Crypto 
 
 - **Web Scraping:** Uses Playwright to scrape the content of any tool's URL.
 - **AI Content Generation:** Leverages the Gemini 2.5 Pro model to generate detailed and well-structured content.
+- **Automatic Genre Detection:** Intelligently categorizes each tool by selecting the most relevant genres from a comprehensive list.
 - **Template-Based:** The entire blog post structure is controlled by a clean, easy-to-edit template (`plan.md`).
 - **WordPress-Compatible CSV:** The script generates a CSV file (`_post.csv`) for each tool that is formatted to be uploaded directly using the WordPress importer.
 
@@ -74,16 +75,16 @@ The script can be run from the command line in two modes:
 
 ### 1. Single Tool Mode
 
-Provide the tool's name and URL as arguments:
+Provide the tool's name and URL as arguments. The script will automatically determine the best genre(s) for the tool.
 
 ```bash
 python gemini_main.py "Canva" "https://www.canva.com"
 ```
 
-You can also specify a contributor and a category:
+You can also specify a contributor:
 
 ```bash
-python gemini_main.py "Goose AI" "https://block.github.io/goose/" --contributor "Community" --category "AI"
+python gemini_main.py "Goose AI" "https://block.github.io/goose/" --contributor "Community"
 ```
 
 After running, the script will create a new directory named `output_csv`. Inside, you will find a new file (e.g., `canva_post.csv`) that is ready to be uploaded to WordPress.
