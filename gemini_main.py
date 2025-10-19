@@ -44,6 +44,46 @@ HTML_OUTPUT_DIR = "output_html_gemini"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 
+genres = [
+    "AI Workflow", "AI Recruiting", "AI Customer Service", "Personal AI Assistant",
+    "Voice AI Agents", "AI Sales Agent", "AI Agent Platform", "AI Coding Assistants",
+    "AI Webinar Script Assistants", "AI Product Description Writers", "AI Logo Makers",
+    "AI Online Course Creators", "AI Print-on-Demand Designers", "AI Dropshipping Automation",
+    "AI Form and Survey Builders", "AI Social Media Schedulers", "AI Video Editors",
+    "AI Automation Tools", "AI App Builders", "AI Website Builders", "AI Email Marketing",
+    "AI No Code Tools", "AI Code Review Tools", "AI Predictive Analytics", "AI Data Analytics",
+    "AI Project Management Tools", "AI Workflow Automation", "AI Personal Assistants",
+    "AI Language Translation", "AI Transcription Tools", "AI SEO Tools", "AI Email Assistants",
+    "AI Text-to-Speech Tools", "AI Voice Generators", "AI Presentation Makers",
+    "AI Design Generators", "AI Music Generators", "AI Open Source & LLMs",
+    "AI Learning & Certifications", "AI Events", "AI Project Investors",
+    "AI Content Generators", "AI Chatbots", "AI Image Generators", "AI Frameworks",
+    "AI Video Generators", "AI Marketing Tools", "AI Image Recognition", "AI Framework",
+    "AI Chatbot Builders", "AI Viral Tweet Generators", "AI Document Summarization",
+    "AI Social Media Management", "AI Customer Support Automation", "AI Virtual Meeting Assistants",
+    "AI for Productivity", "AI Resume Builders", "E-Commerce Store Builders AI",
+    "AI Writing Assistants", "AI Research", "AI Courses", "AI News", "AI Resources",
+    "AI Tools", "AI Mental Health & Wellness", "Crypto Wallet Trackers / Multi-wallet Monitors",
+    "Crypto Security Tools", "Crypto Blockchain Development Platforms",
+    "Crypto Token Analytics Platforms", "Crypto Blockchain Explorers",
+    "Crypto Launchpads (IDO/ICO Platforms)", "Crypto Centralized Exchanges (CEXs)",
+    "Crypto Arbitrage Tools", "Crypto Lending Platform", "Crypto Trading & Sniping Bots",
+    "Crypto Liquid Staking Derivatives", "Crypto Coin Tracker & Stats",
+    "Crypto Initial Coin Offerings (ICOs)", "Crypto KYC and On-chain Identities",
+    "Crypto Environmental", "Crypto Blockchain", "Crypto Smart Contracts", "Crypto Tokenomics",
+    "Crypto Games", "Crypto Directories", "Crypto Entertainment",
+    "Crypto Augmented Reality & Virtual Reality (AR/VR)", "Crypto Passive Income",
+    "Crypto Earn Money and Crypto", "Crypto DYOR Club & Fundamental Reviews", "Crypto eBooks",
+    "Crypto Businesses", "Crypto Open Source & APIs", "Crypto Jobs", "Crypto Help-a-thon",
+    "Crypto Non-Profits", "Crypto Project Investors", "Crypto DAOs",
+    "Crypto Hardware / Security / Support", "Crypto Learning & Certificates", "Crypto Metaverse",
+    "Crypto Real Estate", "Crypto Technical Analysis (TA)", "Crypto Real World Assets",
+    "Crypto Events", "Crypto Staking & Yield Farming", "Crypto News",
+    "Crypto Affiliates - Get Chat Paid", "Crypto Mining", "Crypto Financial & Legal",
+    "Crypto Airdrops", "Crypto Courses", "Crypto NFT Marketplace", "Crypto Gameshows",
+    "Crypto Health & Safety", "Crypto Tools", "Crypto Resources"
+]
+
 PLAN_TEMPLATE = r'''
     📘 Tool Name: [tool name]
     🔗 Official Site: [url]
@@ -311,6 +351,51 @@ def convert_links(content: str) -> str:
     pattern = r'\[([^\]]+)\]\(([^\)]+)\)'
     return re.sub(pattern, r'\2', content)
 
+
+def get_genre_with_gemini(scraped_text: str) -> str:
+    """
+    Uses Gemini to determine the best genres for a tool based on its scraped text.
+    """
+    print("Determining genre with Gemini...")
+    genai.configure(api_key=GEMINI_API_KEY)
+    
+    model = genai.GenerativeModel('gemini-2.5-flash')
+
+    genres_str = ", ".join(genres)
+
+    prompt = f"""
+    Based on the following text from a tool's website, which of these categories best describe it?
+    Categories: {genres_str}
+
+    Please respond with a comma-separated list of the most relevant genres from the list. You can return up to 3 genres. Do not respond with just "AI" or "Crypto".
+
+    Website text:
+    {scraped_text[:4000]}
+    """
+    
+    try:
+        response = model.generate_content(prompt)
+        suggested_genres_str = response.text.strip()
+        
+        # Validate the response from Gemini
+        suggested_genres = [genre.strip() for genre in suggested_genres_str.split(',')]
+        
+        valid_genres = []
+        for genre in suggested_genres:
+            if genre in genres and genre.lower() not in ['ai', 'crypto']:
+                valid_genres.append(genre)
+        
+        if valid_genres:
+            print(f"Gemini genre suggestion: {valid_genres}")
+            return ", ".join(valid_genres)
+        else:
+            print(f"Gemini returned invalid or broad genres: {suggested_genres_str}.")
+            return ""
+            
+    except Exception as e:
+        print(f"Error determining genre with Gemini: {e}")
+        return ""
+
 def generate_content_with_gemini(scraped_text: str, tool_name: str, tool_url: str, contributor: str, plan_template: str, image_url: str, video_url: str, trending_questions: str) -> str:
     """
     Generates content using Google's Gemini model based on a template and scraped text.
@@ -318,7 +403,7 @@ def generate_content_with_gemini(scraped_text: str, tool_name: str, tool_url: st
     print("Generating content with Gemini...")
     genai.configure(api_key=GEMINI_API_KEY)
     
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-2.5-flash')
 
     prompt = f"""
     You are a content creator for a tech blog. Your task is to create a blog post about a new tool, meticulously following the provided template's structure and formatting. Your writing style should be simple, accessible, and engaging, as if you're explaining the tool to a friend who is new to the tech space. Avoid jargon wherever possible.
@@ -384,7 +469,7 @@ def save_tool_as_csv(data: dict, file_path=None, write_header=False):
     row["Excerpt"] = data.get("excerpt", "A short summary for Canva.")
     row["Thumbnail"] = data.get("image_url", "https://media.istockphoto.com/id/636379014/photo/hands-forming-a-heart-shape-with-sunset-silhouette.jpg?s=612x612&w=0&k=20&c=CgjWWGEasjgwia2VT7ufXa10azba2HXmUDe96wZG8F0=")
     row["Language"] = data.get("language", "en")
-    row["Genres"] = data.get("category", "AI").replace(',', ' ')
+    row["Genres"] = data.get("category", "")
     row["Tags"] = data.get("tags", "design,graphics")
     row["Portrait Image"] = data.get("portrait_image", row["Thumbnail"])
     row["Movie Method"] = "Movie URL"
@@ -417,6 +502,7 @@ async def main(args):
     if not scraped_text:
         return
 
+    genre = get_genre_with_gemini(scraped_text)
     image_url = find_image_url(scraped_html, args.url)
     if not image_url:
         image_url = get_google_image(args.name)
@@ -437,7 +523,7 @@ async def main(args):
     data_for_csv = {
         "tool_name": args.name,
         "contributor": args.contributor,
-        "category": args.category,
+        "category": genre,
         "generated_content": generated_content,
         "image_url": image_url,
         "video_url": video_url,
@@ -456,20 +542,19 @@ if __name__ == "__main__":
     parser.add_argument("name", type=str, nargs="?", help="The name of the tool.")
     parser.add_argument("url", type=str, nargs="?", help="The URL of the tool's website.")
     parser.add_argument("--contributor", type=str, default="AIC Community", help="The contributor's name (optional).")
-    parser.add_argument("--category", type=str, default="AI", help="The category of the tool (e.g., AI, Crypto).")
     parser.add_argument("--tools_file", type=str, help="Path to tools.md file containing tool names and links.")
     args = parser.parse_args()
 
-    async def process_tool(tool_name, tool_url, contributor, category, all_rows):
+    async def process_tool(tool_name, tool_url, contributor, all_rows):
         class Args:
             pass
         tool_args = Args()
         tool_args.name = tool_name
         tool_args.url = tool_url
         tool_args.contributor = contributor
-        tool_args.category = category
         
         scraped_text, scraped_html = await scrape_website(tool_url)
+        genre = get_genre_with_gemini(scraped_text)
         image_url = find_image_url(scraped_html, tool_url)
         if not image_url:
             image_url = get_google_image(tool_name)
@@ -482,7 +567,7 @@ if __name__ == "__main__":
         data_for_csv = {
             "tool_name": tool_name,
             "contributor": contributor,
-            "category": category,
+            "category": genre,
             "generated_content": generated_content,
             "image_url": image_url,
             "video_url": video_url,
@@ -514,13 +599,9 @@ if __name__ == "__main__":
             if len(parts) >= 2:
                 tool_name, tool_url = parts[0], parts[1]
                 contributor = args.contributor
-                if len(parts) >= 3:
-                    category = parts[2]
-                else:
-                    category = args.category
                 if os.name == 'nt':
                     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-                asyncio.run(process_tool(tool_name, tool_url, contributor, category, all_rows))
+                asyncio.run(process_tool(tool_name, tool_url, contributor, all_rows))
                 time.sleep(10) # Add a 10-second delay between requests
         # Write all rows to one CSV
         with open(output_file, 'w', newline='', encoding='utf-8') as f:
