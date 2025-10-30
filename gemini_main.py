@@ -133,8 +133,8 @@ PLAN_TEMPLATE = r'''
     ● [3 bullet points of initial warning a new user should consider before signing up. 1-2
     sentences 12-20 words]
 
-    ❓ Beginner FAQ:
-    [Use the top 5 trending questions from the search results and provide a 1 sentence answer for each.]
+
+
 
     🚀 Getting Started:
     1. [3-6 numbered steps on how to get started. 1 sentence per step (8-12 words). Include
@@ -147,16 +147,22 @@ PLAN_TEMPLATE = r'''
     🎯 Difficulty Score: 2/10 🟢 (Super Easy)
     [1 paragraph, 4 sentences. Provide a ranking score for someone new to using this. 1 being super easy, 10 being advanced expert. Rank usability, enjoyment, benefits of use, skills needed to use this, benefit and negative. Do not make false claims on anything throughout the content]
 
+    <p></p>
+
     ⭐ Official AI-Driven Rating: 8.6/10
     [1 paragraph, 4 sentences. Provide a ranking score for someone new to using this. 1 being super easy, 10 being advanced expert. Give your unbiased opinion. Do not make false claims on anything throughout the content. Mention why you like it. Show points awarded and deducted to prove why you gave this score.]
+
+    <hr />
 
     🔎 Deeper Look at [tool name]
 
     🎯 Why [tool name] is Ideal for [Specific Audience]
 
-    Ready to level up your workflow? [tool name] is the AI sidekick you’ve been waiting for. Whether you’re a solo creator building the next big thing or part of a large team, [tool name] is designed to make your life easier. Think of it as a tireless assistant that’s fluent in the tasks you need to accomplish.
-    For [Specific Audience], [tool name] is a game-changer. It’s not just about working faster; it’s about working *smarter*. [tool name] can help you brainstorm solutions to complex problems, automate tedious tasks, and even learn new skills on the fly. 
-    But it’s not just for beginners. Seasoned professionals can use [tool name] to streamline their process, generate boilerplate content, and explore new creative avenues. It’s like having an expert on call 24/7, ready to offer suggestions and insights. By handling the grunt work, [tool name] frees you up to focus on what really matters: creating amazing things.
+        <p>Ready to level up your workflow? [tool name] is the AI sidekick you’ve been waiting for. Whether you’re a solo creator building the next big thing or part of a large team, [tool name] is designed to make your life easier. Think of it as a tireless assistant that’s fluent in the tasks you need to accomplish.</p>
+        <p>For [Specific Audience], [tool name] is a game-changer. It’s not just about working faster; it’s about working *smarter*. [tool name] can help you brainstorm solutions to complex problems, automate tedious tasks, and even learn new skills on the fly.</p>
+        <p>But it’s not just for beginners. Seasoned professionals can use [tool name] to streamline their process, generate boilerplate content, and explore new creative avenues. It’s like having an expert on call 24/7, ready to offer suggestions and insights. By handling the grunt work, [tool name] frees you up to focus on what really matters: creating amazing things.</p>
+
+    <p></p>
 
     🔑 Key Features of [tool name]: In-Depth Breakdown
 
@@ -175,10 +181,9 @@ PLAN_TEMPLATE = r'''
 
     Don’t just take our word for it. Here are a few real-world examples of how people are using [tool name] to do amazing things.
 
-    Startup Saves Hours on [Task]: A small startup was struggling to keep up with their content creation. By using [tool name] to generate ideas and draft initial content, they were able to save over 10 hours per week. This allowed them to focus on their core product and ship features faster.
-    Student Aces a Project: A student with no prior experience in [field] wanted to build a project for a class. Using [tool name], they were able to learn the basics and build a functional prototype in just a few days. 
-    Open Source Project Improves Documentation: A popular open-source project was struggling with outdated documentation. By using [tool name] to help write and revise their docs, they were able to create a more welcoming and accessible resource for their community.
-
+        <p>Startup Saves Hours on [Task]: A small startup was struggling to keep up with their content creation. By using [tool name] to generate ideas and draft initial content, they were able to save over 10 hours per week. This allowed them to focus on their core product and ship features faster.</p>
+        <p>Student Aces a Project: A student with no prior experience in [field] wanted to build a project for a class. Using [tool name], they were able to learn the basics and build a functional prototype in just a few days.</p>
+        <p>Open Source Project Improves Documentation: A popular open-source project was struggling with outdated documentation. By using [tool name] to help write and revise their docs, they were able to create a more welcoming and accessible resource for their community.</p>
     ❓ FAQ - 5 questions and answers that are trending on Google that need answers.
 
     1.  Is [tool name] better than [Competitor]?
@@ -212,6 +217,8 @@ async def scrape_website(url: str) -> tuple[str, str]:
     Returns a tuple of (text_content, html_content).
     """
     print(f"Scraping {url}...")
+    if not url.startswith('http'):
+        url = 'https://' + url
     try:
         async with async_playwright() as p:
             browser = await p.chromium.launch()
@@ -376,6 +383,7 @@ def get_genre_with_gemini(scraped_text: str) -> str:
     try:
         response = model.generate_content(prompt)
         suggested_genres_str = response.text.strip()
+        print(f"Gemini raw response for genre: {suggested_genres_str}")
         
         # Validate the response from Gemini
         suggested_genres = [genre.strip() for genre in suggested_genres_str.split(',')]
@@ -386,8 +394,8 @@ def get_genre_with_gemini(scraped_text: str) -> str:
                 valid_genres.append(genre)
         
         if valid_genres:
-            print(f"Gemini genre suggestion: {valid_genres}")
-            return ", ".join(valid_genres)
+            print(f"Gemini genre suggestion: {valid_genres[0]}")
+            return valid_genres[0]
         else:
             print(f"Gemini returned invalid or broad genres: {suggested_genres_str}.")
             return ""
@@ -588,21 +596,25 @@ if __name__ == "__main__":
         all_rows = []
         with open(args.tools_file, "r", encoding="utf-8") as f:
             lines = f.readlines()
-        for line in lines:
+        print(f"Found {len(lines)} lines in {args.tools_file}")
+        for i, line in enumerate(lines):
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
             if "|" in line:
                 parts = [p.strip() for p in line.split("|")]
             else:
-                parts = line.split()
+                parts = [p.strip() for p in line.split(',')]
             if len(parts) >= 2:
                 tool_name, tool_url = parts[0], parts[1]
                 contributor = args.contributor
+                print(f"Processing line {i+1}: {line.strip()}")
                 if os.name == 'nt':
                     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
                 asyncio.run(process_tool(tool_name, tool_url, contributor, all_rows))
+                print(f"Number of rows in all_rows: {len(all_rows)}")
                 time.sleep(10) # Add a 10-second delay between requests
+        print(f"Finished processing. Total rows to write: {len(all_rows)}")
         # Write all rows to one CSV
         with open(output_file, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=headers, quoting=csv.QUOTE_ALL, delimiter=',')
@@ -615,7 +627,7 @@ if __name__ == "__main__":
                 out_row["Excerpt"] = row.get("excerpt", "")
                 out_row["Thumbnail"] = row.get("image_url", "")
                 out_row["Language"] = row.get("language", "en")
-                out_row["Genres"] = row.get("category", "").replace(',', ' ')
+                out_row["Genres"] = row.get("category", "")
                 out_row["Tags"] = row.get("tags", "")
                 out_row["Portrait Image"] = row.get("portrait_image", "")
                 out_row["Movie Method"] = row.get("movie_method", "Movie URL")
