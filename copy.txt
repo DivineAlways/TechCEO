@@ -389,16 +389,9 @@ def get_genre_with_gemini(scraped_text: str) -> str:
         suggested_genres = [genre.strip() for genre in suggested_genres_str.split(',')]
         
         valid_genres = []
-        # Create a set of normalized genres for efficient lookup
-        normalized_genres = {g.strip().lower() for g in genres}
-        
         for genre in suggested_genres:
-            normalized_suggested_genre = genre.strip().lower()
-            if normalized_suggested_genre in normalized_genres and normalized_suggested_genre not in ['ai', 'crypto']:
-                # Find the original casing from the 'genres' list to return
-                original_genre = next((g for g in genres if g.strip().lower() == normalized_suggested_genre), None)
-                if original_genre:
-                    valid_genres.append(original_genre)
+            if genre in genres and genre.lower() not in ['ai', 'crypto']:
+                valid_genres.append(genre)
         
         if valid_genres:
             print(f"Gemini genre suggestion: {valid_genres[0]}")
