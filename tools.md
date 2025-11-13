@@ -1,7 +1,7 @@
 ### Examples
 ### Canva | https://www.canva.com | Ai Tools
 
-ChatGPT,https://chat.openai.com
+Figma,https://www.figma.com/
 Google Gemini,https://gemini.google.com
 Canva,https://www.canva.com 
 

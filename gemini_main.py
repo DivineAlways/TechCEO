@@ -15,8 +15,8 @@ from urllib.parse import urljoin
 # --- Main Application Logic ---
 
 def get_google_image(tool_name: str) -> str:
-    print(f"Searching Google Images for '{tool_name}'...")
-    search_url = f"https://www.google.com/search?tbm=isch&q={tool_name}"
+    print(f"Searching Google Images for '{tool_name} logo'...")
+    search_url = f"https://www.google.com/search?tbm=isch&q={tool_name.replace(' ', '+')}+logo"
     headers = {"User-Agent": "Mozilla/5.0"}
     try:
         resp = requests.get(search_url, headers=headers)
@@ -144,12 +144,12 @@ PLAN_TEMPLATE = r'''
     ● [3 bullet points for more advanced users. 1-2 sentence answer (15-20 words per
     sentence)]
 
-    🎯 Difficulty Score: 2/10 🟢 (Super Easy)
+    🎯 Difficulty Score: [Rank from 1-10]/10 [Emoji] ([Descriptor])
     [1 paragraph, 4 sentences. Provide a ranking score for someone new to using this. 1 being super easy, 10 being advanced expert. Rank usability, enjoyment, benefits of use, skills needed to use this, benefit and negative. Do not make false claims on anything throughout the content]
 
     <p></p>
 
-    ⭐ Official AI-Driven Rating: 8.6/10
+    ⭐ Official AI-Driven Rating: [Rank from 1-10]/10
     [1 paragraph, 4 sentences. Provide a ranking score for someone new to using this. 1 being super easy, 10 being advanced expert. Give your unbiased opinion. Do not make false claims on anything throughout the content. Mention why you like it. Show points awarded and deducted to prove why you gave this score.]
 
     <hr />

@@ -1,8 +1,5 @@
-make better spaces in  ⭐ Official AI-Driven Rating: 8.6/10
-and Difficulty Score: 2/10 🟢 (Super Easy)
+Things that were fixed:
 
- Why Midjourney is Ideal for Creative Explorers (make sure its not all bunch up)
+1. The Diffuclt Score and Ai Generated Scroe looked like it was hard coded to always score 8.6. I need it to pick or generate a new score for every tool. - **Resolved: The template has been updated to dynamically generate these scores.**
 
- (change this things for mobile or better viewing)
-
- pick only genre instead of multiplable 
+2. For the pictures that it picks, is there a way for it to alays pick a picture the name of the tool in the middle of the picture? - **Resolved: The image search query has been updated to search for the tool's logo, which should provide more relevant images.**
