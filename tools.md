@@ -1,8 +1,8 @@
 ### Examples
 ### Canva | https://www.canva.com | Ai Tools
 
-Figma,https://www.figma.com/
-Google Gemini,https://gemini.google.com
-Canva,https://www.canva.com 
+Copy.ai, https://www.copy.ai
+Canva, https://www.canva.com
+LogoMakr, https://logomakr.com
 
   
