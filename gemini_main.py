@@ -94,7 +94,7 @@ PLAN_TEMPLATE = r'''
     🧩 Quick Look: [Simple breakdown - keep it to under 7 words]
     Beginner Benefit: [Simple breakdown - keep it to under 7 words]
 
-    🌟 Nansen 101:
+    🌟 [tool name] 101:
     [explainer 101 section - give brief breakdown. 2 paragraphs, 3 sentences each.]
 
     📚 Key AI Concepts Explained:
